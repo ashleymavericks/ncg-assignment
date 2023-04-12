@@ -6,20 +6,22 @@ from tkinter import *
 from dotenv import load_dotenv
 import os
 
+
 load_dotenv()
 
 conn = sqlite3.connect('gdp_data.db')
 
 # Retrieve GDP data
-query = "SELECT year, gdp_usd_billion FROM gdp_data"
+query = "SELECT year, gdp_usd_billion, gdp_inr_billion FROM gdp_data"
 df = pd.read_sql(query, conn)
 
 # Retrieve the conversion rate from external API
-response = requests.get(
-    f"https://api.currencyfreaks.com/latest?apikey={os.getenv('API_KEY')}")
-data = response.json()
-conversion_rate = data['rates']['INR']
+# response = requests.get(
+#     f"https://api.currencyfreaks.com/latest?apikey={os.getenv('API_KEY')}")
+# data = response.json()
+# conversion_rate = data['rates']['INR']
 
+print(df)
 # Display the Chart with GDP data
 fig, ax = plt.subplots()
 ax.plot(df['year'], df['gdp_usd_billion'])
@@ -32,7 +34,7 @@ plt.show()
 
 # Converts the GDP data from USD to INR
 def convert_to_inr():
-    df['gdp_inr_billion'] = df['gdp_usd_billion'].astype(float) * float(conversion_rate)
+    # df['gdp_inr_billion'] = df['gdp_usd_billion'].astype(float) * float(conversion_rate)
     fig, ax = plt.subplots()
     ax.plot(df['year'], df['gdp_inr_billion'])
     ax.set_title('India GDP in INR Billions')
